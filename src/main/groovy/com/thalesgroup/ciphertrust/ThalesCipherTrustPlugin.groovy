@@ -44,10 +44,10 @@ class ThalesCipherTrustPlugin extends Plugin {
 		this.pluginProviders.put("ciphertrust" ,cipherTrustCredentialProvider)
 
 		ThalesCipherTrustCypherKeyProvider cipherTrustKeyCypherProvider = new ThalesCipherTrustCypherKeyProvider(this, morpheus)
-		this.pluginProviders.put("ciphertrust-cypher", cipherTrustKeyCypherProvider)
+		this.pluginProviders.put("ciphertrust-key", cipherTrustKeyCypherProvider)
 
 		ThalesCipherTrustCypherSecretProvider cipherTrustSecretCypherProvider = new ThalesCipherTrustCypherSecretProvider(this, morpheus)
-		this.pluginProviders.put("ciphertrust-cypher", cipherTrustSecretCypherProvider)
+		this.pluginProviders.put("ciphertrust-secret", cipherTrustSecretCypherProvider)
 
 
 		this.settings << new OptionType (
