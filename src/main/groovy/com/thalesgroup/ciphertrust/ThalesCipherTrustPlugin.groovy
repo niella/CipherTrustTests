@@ -40,11 +40,11 @@ class ThalesCipherTrustPlugin extends Plugin {
 		this.setDescription("Thales CipherTrust Plugin")
 		this.setAuthor("Thales")
 
-		ThalesCipherTrustCredentialProvider cipherTrustCredentialProvider = new ThalesCipherTrustCredentialProvider(this, morpheus)
-		this.pluginProviders.put("ciphertrust" ,cipherTrustCredentialProvider)
-
-		ThalesCipherTrustCypherKeyProvider cipherTrustKeyCypherProvider = new ThalesCipherTrustCypherKeyProvider(this, morpheus)
-		this.pluginProviders.put("ciphertrust-key", cipherTrustKeyCypherProvider)
+//		ThalesCipherTrustCredentialProvider cipherTrustCredentialProvider = new ThalesCipherTrustCredentialProvider(this, morpheus)
+//		this.pluginProviders.put("ciphertrust" ,cipherTrustCredentialProvider)
+//
+//		ThalesCipherTrustCypherKeyProvider cipherTrustKeyCypherProvider = new ThalesCipherTrustCypherKeyProvider(this, morpheus)
+//		this.pluginProviders.put("ciphertrust-key", cipherTrustKeyCypherProvider)
 
 		ThalesCipherTrustCypherSecretProvider cipherTrustSecretCypherProvider = new ThalesCipherTrustCypherSecretProvider(this, morpheus)
 		this.pluginProviders.put("ciphertrust-secret", cipherTrustSecretCypherProvider)
@@ -110,7 +110,7 @@ class ThalesCipherTrustPlugin extends Plugin {
 				inputType: OptionType.InputType.PASSWORD,
 				fieldName: 'secretsServicePassword',
 				fieldLabel: 'API Access Key',
-				displayOrder: 2,
+				displayOrder: 5,
 				helpText: 'The API Access Key'
 		)
 		new OptionType(
@@ -120,7 +120,7 @@ class ThalesCipherTrustPlugin extends Plugin {
 				defaultValue: ThalesCipherTrustCredentialProvider.DEFAULT_SECRET_PATH,
 				fieldName: 'secretsServicePath',
 				fieldLabel: 'Secret Path',
-				displayOrder: 3
+				displayOrder: 6
 		)
 
 
