@@ -40,14 +40,17 @@ class ThalesCipherTrustPlugin extends Plugin {
 		this.setDescription("Thales CipherTrust Plugin")
 		this.setAuthor("Thales")
 
-		//ThalesCipherTrustCredentialProvider cipherTrustCredentialProvider = new ThalesCipherTrustCredentialProvider(this, morpheus)
-		//this.pluginProviders.put("ciphertrust" ,cipherTrustCredentialProvider)
+		ThalesCipherTrustCredentialProvider cipherTrustCredentialProvider = new ThalesCipherTrustCredentialProvider(this, morpheus)
+		this.pluginProviders.put("ciphertrust" ,cipherTrustCredentialProvider)
 
-		ThalesCipherTrustCypherProvider     cipherTrustCypherProvider = new ThalesCipherTrustCypherProvider(this, morpheus)
-		this.pluginProviders.put("ciphertrust-cypher", cipherTrustCypherProvider)
+		ThalesCipherTrustCypherKeyProvider cipherTrustKeyCypherProvider = new ThalesCipherTrustCypherKeyProvider(this, morpheus)
+		this.pluginProviders.put("ciphertrust-cypher", cipherTrustKeyCypherProvider)
+
+		ThalesCipherTrustCypherSecretProvider cipherTrustSecretCypherProvider = new ThalesCipherTrustCypherSecretProvider(this, morpheus)
+		this.pluginProviders.put("ciphertrust-cypher", cipherTrustSecretCypherProvider)
 
 
-         this.settings << new OptionType (
+		this.settings << new OptionType (
                 name: 'Thales CipherTrust Service Url',
                 code: 'ciphertrust-cypher-plugin-url',
                 fieldName: 'cipherTrustPluginServiceUrl',
@@ -57,6 +60,8 @@ class ThalesCipherTrustPlugin extends Plugin {
                 required: true,
                 inputType: OptionType.InputType.TEXT
         )
+
+		//for keys provider
         this.settings << new OptionType (
                 name: 'Thales CipherTrust Username',
                 code: 'ciphertrust-cypher-plugin-serviceusername',
@@ -88,6 +93,39 @@ class ThalesCipherTrustPlugin extends Plugin {
 				defaultValue: 'root',
                 inputType: OptionType.InputType.TEXT
         )
+
+		//for secrets provider
+		this.settings << new OptionType(
+				code: 'ciphertrust.serviceUsername',
+				name: 'API Access Id',
+				inputType: OptionType.InputType.TEXT,
+				fieldName: 'secretsServiceUsername',
+				fieldLabel: 'API Access Id',
+				fieldContext: 'domain',
+				displayOrder: 1,
+				helpText: 'The API Access Id'
+		)
+		this.settings << new OptionType(
+				code: 'ciphertrust.servicePassword',
+				name: 'API Access Key',
+				inputType: OptionType.InputType.PASSWORD,
+				fieldName: 'secretsServicePassword',
+				fieldLabel: 'API Access Key',
+				fieldContext: 'domain',
+				displayOrder: 2,
+				helpText: 'The API Access Key'
+		)
+		new OptionType(
+				code: 'ciphertrust.servicePath',
+				name: 'Secret Path',
+				inputType: OptionType.InputType.TEXT,
+				defaultValue: ThalesCipherTrustCredentialProvider.DEFAULT_SECRET_PATH,
+				fieldName: 'secretsServicePath',
+				fieldLabel: 'Secret Path',
+				fieldContext: 'domain',
+				displayOrder: 3
+		)
+
 
 	}
 
@@ -140,6 +178,36 @@ class ThalesCipherTrustPlugin extends Plugin {
 		}
 		return rtn
 	}
+
+	public String getSecretsServiceUsername() {
+		def rtn
+		def settings = getSettings(this.morpheus, this)
+		if (settings.secretsServiceUsername) {
+			rtn = settings.secretsServiceUsername
+			rtn = rtn.replace(" ", "");
+		}
+		return rtn
+	}
+
+	public String getSecretsServicePassword() {
+		def rtn
+		def settings = getSettings(this.morpheus, this)
+		if (settings.secretsServicePassword) {
+			rtn = settings.secretsServicePassword
+		}
+		return rtn
+	}
+
+	public String getSecretsServicePath() {
+		def rtn
+		def settings = getSettings(this.morpheus, this)
+		if (settings.secretsServicePath) {
+			rtn = settings.secretsServicePath
+		}
+		return rtn
+	}
+
+
 
 
 	private getSettings(MorpheusContext morpheusContext, Plugin plugin) {

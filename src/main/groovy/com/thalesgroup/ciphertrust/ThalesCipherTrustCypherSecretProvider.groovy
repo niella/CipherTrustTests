@@ -1,17 +1,16 @@
 package com.thalesgroup.ciphertrust
 
-import com.morpheusdata.core.providers.CypherModuleProvider
 import com.morpheusdata.core.MorpheusContext
 import com.morpheusdata.core.Plugin
+import com.morpheusdata.core.providers.CypherModuleProvider
 import com.morpheusdata.cypher.CypherModule
-import com.morpheusdata.model.OptionType
 
-class ThalesCipherTrustCypherProvider implements CypherModuleProvider{
+class ThalesCipherTrustCypherSecretProvider implements CypherModuleProvider {
     MorpheusContext morpheusContext
     Plugin plugin
-    String code = 'ciphertrust-cypher'
+    String code = 'ciphertrust-secret'
 
-    ThalesCipherTrustCypherProvider(Plugin plugin, MorpheusContext morpheusContext) {
+    ThalesCipherTrustCypherSecretProvider(Plugin plugin, MorpheusContext morpheusContext) {
         this.plugin = plugin
         this.morpheusContext = morpheusContext
     }
@@ -22,7 +21,7 @@ class ThalesCipherTrustCypherProvider implements CypherModuleProvider{
      */
     @Override
     CypherModule getCypherModule() {
-        ThalesCipherTrustCypherModule module = new ThalesCipherTrustCypherModule()
+        ThalesCipherTrustCypherSecretModule module = new ThalesCipherTrustCypherSecretModule()
         module.setMorpheusContext(this.morpheusContext)
         module.setPlugin(this.plugin)
         return module
@@ -33,10 +32,10 @@ class ThalesCipherTrustCypherProvider implements CypherModuleProvider{
     /**
      * The mount prefix point for which this module should be registered to cypher's backend.
      * @return a String path prefix
-    */
+     */
     @Override
     String getCypherMountPoint() {
-        return 'ciphertrust'
+        return 'ciphertrustsecret'
     }
 
     /**
@@ -67,6 +66,11 @@ class ThalesCipherTrustCypherProvider implements CypherModuleProvider{
      */
     @Override
     String getName() {
-        return 'CipherTrust Cypher'
+        return 'CipherTrust Secrets'
+    }
+
+    @Override
+    Plugin getPlugin() {
+        return this.plugin
     }
 }

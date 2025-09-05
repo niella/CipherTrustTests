@@ -17,11 +17,11 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class ThalesCipherTrustCredentialProvider implements CredentialProvider {
     MorpheusContext morpheusContext
-    Plugin plugin
+    ThalesCipherTrustPlugin plugin
     String credTtoken
     long timeCredToken
 
-    ThalesCipherTrustCredentialProvider(Plugin plugin, MorpheusContext morpheusContext) {
+    ThalesCipherTrustCredentialProvider(ThalesCipherTrustPlugin plugin, MorpheusContext morpheusContext) {
         this.morpheusContext = morpheusContext
         this.plugin = plugin
     }

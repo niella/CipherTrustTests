@@ -20,12 +20,12 @@ import groovy.util.logging.Slf4j
 
 
 @Slf4j
-class ThalesCipherTrustCypherModule implements CypherModule {
+class ThalesCipherTrustCypherKeyModule implements CypherModule {
 
     static List<String> SUPPORTED_ALGORITHMS = ['aes', 'tdes', 'rsa', 'ec', 'hmac-sha1', 'hmac-sha256', 'hmac-sha384', 'hmac-sha512', 'seed', 'aria', 'opaque']
 
     Cypher cypher;
-    Plugin plugin;
+    ThalesCipherTrustPlugin plugin;
     String jwtToken;
     long timeJWT
 
@@ -35,7 +35,7 @@ class ThalesCipherTrustCypherModule implements CypherModule {
         this.cypher = cypher;
     }
     
-    public void setPlugin(Plugin plugin) {
+    public void setPlugin(ThalesCipherTrustPlugin plugin) {
       this.plugin = plugin
     }
 
@@ -285,11 +285,7 @@ class ThalesCipherTrustCypherModule implements CypherModule {
 
     @Override
     public String getUsage() {
-        StringBuilder usage = new StringBuilder();
-
-        usage.append("This allows cyphers to use Thales CipherTrust Manager. This can be configured in the plugin integration settings.");
-
-        return usage.toString();
+        return "This allows cyphers to use Thales CipherTrust Manager Keys. This can be configured in the plugin integration settings. Provide 'generate' as the value below."
     }
 
     @Override
