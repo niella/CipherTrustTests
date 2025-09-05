@@ -101,8 +101,7 @@ class ThalesCipherTrustPlugin extends Plugin {
 				inputType: OptionType.InputType.TEXT,
 				fieldName: 'secretsServiceUsername',
 				fieldLabel: 'API Access Id',
-				fieldContext: 'domain',
-				displayOrder: 1,
+				displayOrder: 4,
 				helpText: 'The API Access Id'
 		)
 		this.settings << new OptionType(
@@ -111,7 +110,6 @@ class ThalesCipherTrustPlugin extends Plugin {
 				inputType: OptionType.InputType.PASSWORD,
 				fieldName: 'secretsServicePassword',
 				fieldLabel: 'API Access Key',
-				fieldContext: 'domain',
 				displayOrder: 2,
 				helpText: 'The API Access Key'
 		)
@@ -122,7 +120,6 @@ class ThalesCipherTrustPlugin extends Plugin {
 				defaultValue: ThalesCipherTrustCredentialProvider.DEFAULT_SECRET_PATH,
 				fieldName: 'secretsServicePath',
 				fieldLabel: 'Secret Path',
-				fieldContext: 'domain',
 				displayOrder: 3
 		)
 
