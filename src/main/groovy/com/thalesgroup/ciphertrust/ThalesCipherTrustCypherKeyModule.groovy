@@ -24,10 +24,11 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
 
     static List<String> SUPPORTED_ALGORITHMS = ['aes', 'tdes', 'rsa', 'ec', 'hmac-sha1', 'hmac-sha256', 'hmac-sha384', 'hmac-sha512', 'seed', 'aria', 'opaque']
 
-    Cypher cypher;
-    ThalesCipherTrustPlugin plugin;
-    String jwtToken;
+    Cypher cypher
+    ThalesCipherTrustPlugin plugin
+    String jwtToken
     long timeJWT
+    ThalesCipherTrustCypherKeyProvider provider
 
     MorpheusContext morpheusContext
     @Override
@@ -43,22 +44,16 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
         this.morpheusContext = morpheusContext
     }
 
-
-
-//    @Override
-//    public CypherObject write(String key, String path, String value, Long leaseTimeout, String leaseObjectRef, String createdBy) {
-//        log.info("CypherObject write: $path/$key.....")
-//
-//        CypherObject rtn = new CypherObject("$path/$key", "testvalue", leaseTimeout, leaseObjectRef, createdBy)
-//        return  rtn
-//    }
+    public void setProvider(ThalesCipherTrustCypherKeyProvider provider) {
+        this.provider = provider
+    }
 
 
     @Override
-    public CypherObject write(String key, String path, String value, Long leaseTimeout, String leaseObjectRef, String createdBy) {
+    public CypherObject write(String relativeKey, String path, String value, Long leaseTimeout, String leaseObjectRef, String createdBy) {
             log.info("CypherObject write.....")
         log.info("PATH IS: $path")
-        log.info("KEY IS: $key")
+        log.info("KEY IS: $relativeKey")
 
         HttpApiClient apiClient = new HttpApiClient()
 
@@ -70,14 +65,14 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
 
         try {
             def authResults = authToken(apiUrl,username,password,domain)
-            def body = ['description': "$path/$key"]
+            def body = ['description': "$path/$relativeKey"]
             if(authResults.success) {
                 String bearerString = 'Bearer ' + jwtToken
                 String endpoint = 'v1/vault/keys2'
-                def splitKey = key.split("/")
+                def splitKey = relativeKey.split("/")
 
-                if (key.startsWith "rotate/") {
-                    log.debug("key rotation requested ${key}")
+                if (relativeKey.startsWith "rotate/") {
+                    log.debug("key rotation requested ${relativeKey}")
                     def urlKey = (splitKey.length > 1) ? splitKey[1] : splitKey[0]
                     endpoint += "/$urlKey/versions"
                 } else {
@@ -85,20 +80,19 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
                         if (!SUPPORTED_ALGORITHMS.contains(splitKey[0])) throw new Exception("Algorithm '${splitKey[0]} not supported.'")
                         body['algorithm'] = splitKey[0]
                     } else {
+                        log.error("Algorithm not supplied. Please provide mount point in the form ${this.provider.getCypherMountPoint()}/aes/mykeyname ")
                         body['algorithm'] = SUPPORTED_ALGORITHMS[0] //aes
-                        //key = "${SUPPORTED_ALGORITHMS[0]}/$key"
+                        relativeKey = "${SUPPORTED_ALGORITHMS[0]}/$relativeKey"
                     }
                     body['name'] = splitKey[-1]
                 }
                 def headers = ['Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': bearerString ]
-
                 HttpApiClient.RequestOptions restOptions = new HttpApiClient.RequestOptions([headers: headers , body: body])
-
                 def apiResults = apiClient.callApi(apiUrl, endpoint, null, null, restOptions, 'POST')
                 log.info("apiResults: ${apiResults.toMap()}")
-                log.info("Path/Key: $path/$key")
+                log.info("Path/Key: $path/$relativeKey")
                 if(apiResults.success) {
-                    CypherObject rtn = new CypherObject("$path/$key", value, leaseTimeout, leaseObjectRef, createdBy)
+                    CypherObject rtn = new CypherObject("$path/$relativeKey", value, leaseTimeout, leaseObjectRef, createdBy)
                     //rtn.shouldPersist = false;
                     return rtn
                 } else {
@@ -116,13 +110,6 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
         finally {
             apiClient.shutdownClient()
         }
-    }
-
-    //@Override
-    public CypherObject read2(String key, String path, Long leaseTimeout, String leaseObjectRef, String createdBy) {
-
-        CypherObject keyResults = new CypherObject(key,"testValue",leaseTimeout,leaseObjectRef, createdBy)
-        return keyResults
     }
 
 
@@ -163,32 +150,25 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
                     log.debug("Successfully retrieved key ${key}")
                     //log.info("Successfully retrieved key material ${resultContent.material}")
 
-                    CypherObject keyResults = new CypherObject(key,resultContent.material,leaseTimeout,leaseObjectRef, createdBy);
+                    CypherObject keyResults = new CypherObject("$path/$key", resultContent.material, leaseTimeout, leaseObjectRef, createdBy)
                     keyResults.shouldPersist = false;
                     return keyResults;
                 } else {
                     log.debug("Cypher failed to read key ")
-                    return null
+                    return new CypherObject("$path/$key", "Error Retrieving Secret", leaseTimeout, leaseObjectRef, createdBy)
                 }
             } else {
                 log.error("Cypher failed to read key ")
-                return null
+                return new CypherObject("$path/$key", "Error Retrieving Secret", leaseTimeout, leaseObjectRef, createdBy)
             }
         } catch (Exception exception) {
             log.error("Cypher failed to read key ", exception)
-            return null
+            return new CypherObject("$path/$key", "Error Retrieving Secret",leaseTimeout,leaseObjectRef, createdBy)
         }
         finally {
             apiClient.shutdownClient()
         }
     }
-
-
-//    @Override
-//    public boolean delete(String key, String path, CypherObject object) {
-//        log.info("Key to delete: $key")
-//        return true
-//    }
 
 
     @Override
@@ -221,17 +201,14 @@ class ThalesCipherTrustCypherKeyModule implements CypherModule {
                 } else {
                     log.error("Cypher failed to delete key ")
                     return false
-//                    return true
                 }
             } else {
                 log.error("Cypher failed to delete key  ")
                 return false
-//                return true
             }
         } catch (Exception exception) {
             log.error("Cypher failed to delete key", exception)
             return false
-//            return true
         }
         finally {
             apiClient.shutdownClient()

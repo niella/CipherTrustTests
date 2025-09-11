@@ -7,10 +7,10 @@ import com.morpheusdata.cypher.CypherModule
 
 class ThalesCipherTrustCypherKeyProvider implements CypherModuleProvider{
     MorpheusContext morpheusContext
-    Plugin plugin
+    ThalesCipherTrustPlugin plugin
     String code = 'ciphertrust-key'
 
-    ThalesCipherTrustCypherKeyProvider(Plugin plugin, MorpheusContext morpheusContext) {
+    ThalesCipherTrustCypherKeyProvider(ThalesCipherTrustPlugin plugin, MorpheusContext morpheusContext) {
         this.plugin = plugin
         this.morpheusContext = morpheusContext
     }
@@ -24,6 +24,7 @@ class ThalesCipherTrustCypherKeyProvider implements CypherModuleProvider{
         ThalesCipherTrustCypherKeyModule module = new ThalesCipherTrustCypherKeyModule()
         module.setMorpheusContext(this.morpheusContext)
         module.setPlugin(this.plugin)
+        module.setProvider(this)
         return module
     }
 
