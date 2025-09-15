@@ -15,21 +15,6 @@ class ThalesCipherTrustCypherSecretModule implements CypherModule {
     MorpheusContext morpheusContext
 
     @Override
-    public void setCypher(Cypher cypher) {
-        this.cypher = cypher;
-    }
-
-    public void setPlugin(ThalesCipherTrustPlugin plugin) {
-        this.plugin = plugin
-    }
-
-    public void setMorpheusContext(MorpheusContext morpheusContext) {
-        this.morpheusContext = morpheusContext
-    }
-
-
-
-    @Override
     CypherObject write(String relativeKey, String path, String value, Long leaseTimeout, String leaseObjectRef, String createdBy) {
 
         String apiUrl = plugin.getUrl();
@@ -37,7 +22,8 @@ class ThalesCipherTrustCypherSecretModule implements CypherModule {
         String password = plugin.getSecretsServicePassword();
         String servicePath = plugin.getSecretsServicePath();
 
-        return null
+        CypherObject rtn = new CypherObject("$path/$relativeKey", value, leaseTimeout, leaseObjectRef, createdBy)
+        return rtn
     }
 
     @Override
@@ -48,8 +34,8 @@ class ThalesCipherTrustCypherSecretModule implements CypherModule {
         String password = plugin.getSecretsServicePassword();
         String servicePath = plugin.getSecretsServicePath();
 
-
-        return null
+        CypherObject rtn = new CypherObject("$path/$relativeKey", "test", leaseTimeout, leaseObjectRef, createdBy)
+        return rtn
     }
 
     @Override
@@ -62,7 +48,6 @@ class ThalesCipherTrustCypherSecretModule implements CypherModule {
 
         return true
     }
-
 
     @Override
     String getUsage() {
@@ -77,6 +62,19 @@ class ThalesCipherTrustCypherSecretModule implements CypherModule {
     @Override
     Boolean readFromDatastore() {
         return false
+    }
+
+    @Override
+    public void setCypher(Cypher cypher) {
+        this.cypher = cypher;
+    }
+
+    public void setPlugin(ThalesCipherTrustPlugin plugin) {
+        this.plugin = plugin
+    }
+
+    public void setMorpheusContext(MorpheusContext morpheusContext) {
+        this.morpheusContext = morpheusContext
     }
 }
 
