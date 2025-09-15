@@ -51,11 +51,11 @@ class ThalesCipherTrustPlugin extends Plugin {
 
 
 		this.settings << new OptionType (
-                name: 'Thales CipherTrust Service Url',
-                code: 'ciphertrust-cypher-plugin-url',
-                fieldName: 'cipherTrustPluginServiceUrl',
+                name: 'Service Url',
+                code: 'ciphertrust-service-url',
+                fieldName: 'keysServiceUrl',
                 displayOrder: 0,
-                fieldLabel: 'Thales CipherTrust Url',
+                fieldLabel: 'Service Url',
                 helpText: 'The full URL of the Thales CipherTrust Manager endpoint. Example: https://ciphertrust.domain/api/',
                 required: true,
                 inputType: OptionType.InputType.TEXT
@@ -63,29 +63,29 @@ class ThalesCipherTrustPlugin extends Plugin {
 
 		//for keys provider
         this.settings << new OptionType (
-                name: 'Thales CipherTrust Username',
-                code: 'ciphertrust-cypher-plugin-serviceusername',
-                fieldName: 'cipherTrustPluginServiceUsername',
+                name: 'Keys Username',
+                code: 'ciphertrust-keys-service-username',
+                fieldName: 'keysServiceUsername',
                 displayOrder: 1,
-                fieldLabel: 'CipherTrust API Username',
-                helpText: 'CipherTrust API Username',
+                fieldLabel: 'Keys API Username',
+                helpText: 'Keys API Username',
                 required: true,
                 inputType: OptionType.InputType.TEXT
         )
         this.settings << new OptionType (
-                name: 'Thales CipherTrust Password',
-                code: 'ciphertrust-cypher-plugin-servicepassword',
-                fieldName: 'cipherTrustPluginServicePassword',
+                name: 'Keys Password',
+                code: 'ciphertrust-keys-service-password',
+                fieldName: 'keysServicePassword',
                 displayOrder: 2,
-                fieldLabel: 'CipherTrust API Password',
-                helpText: 'CipherTrust API Password',
+                fieldLabel: 'Keys API Password',
+                helpText: 'Keys API Password',
                 required: true,
                 inputType: OptionType.InputType.PASSWORD
         )
         this.settings << new OptionType (
-                name: 'Thales CipherTrust Domain',
-                code: 'ciphertrust-cypher-plugin-serviceSlave',
-                fieldName: 'cipherTrustPluginServiceSlave',
+                name: 'Keys Domain',
+                code: 'ciphertrust-keys-service-domain',
+                fieldName: 'keysServiceDomain',
                 displayOrder: 3,
                 fieldLabel: 'CipherTrust Domain',
                 helpText: 'CipherTrust Domain',
@@ -96,8 +96,8 @@ class ThalesCipherTrustPlugin extends Plugin {
 
 		//for secrets provider
 		this.settings << new OptionType(
-				code: 'ciphertrust.serviceUsername',
-				name: 'API Access Id',
+				name: 'Secrets User',
+				code: 'ciphertrust-secrets-service-username',
 				inputType: OptionType.InputType.TEXT,
 				fieldName: 'secretsServiceUsername',
 				fieldLabel: 'API Access Id',
@@ -105,17 +105,17 @@ class ThalesCipherTrustPlugin extends Plugin {
 				helpText: 'The API Access Id'
 		)
 		this.settings << new OptionType(
-				code: 'ciphertrust.servicePassword',
 				name: 'API Access Key',
+				code: 'ciphertrust-secrets-service-password',
 				inputType: OptionType.InputType.PASSWORD,
 				fieldName: 'secretsServicePassword',
 				fieldLabel: 'API Access Key',
 				displayOrder: 5,
 				helpText: 'The API Access Key'
 		)
-		new OptionType(
-				code: 'ciphertrust.servicePath',
+		this.settings << new OptionType(
 				name: 'Secret Path',
+				code: 'ciphertrust-secret-service-path',
 				inputType: OptionType.InputType.TEXT,
 				defaultValue: ThalesCipherTrustCredentialProvider.DEFAULT_SECRET_PATH,
 				fieldName: 'secretsServicePath',
@@ -134,11 +134,11 @@ class ThalesCipherTrustPlugin extends Plugin {
 		//nothing to do for now
 	}
 	
-	public  String getUrl() {
+	public String getUrl() {
 		def rtn
 		def settings = getSettings(this.morpheus, this)
-		if (settings.cipherTrustPluginServiceUrl) {
-			rtn = settings.cipherTrustPluginServiceUrl
+		if (settings.keysServiceUrl) {
+			rtn = settings.keysServiceUrl
 			rtn = rtn.replace(" ", "");
 			if(!rtn.endsWith('/')) {
 				rtn = rtn + '/'
@@ -150,8 +150,8 @@ class ThalesCipherTrustPlugin extends Plugin {
 	public String getServiceUsername() {
 		def rtn
 		def settings = getSettings(this.morpheus, this)
-		if (settings.cipherTrustPluginServiceUsername) {
-			rtn = settings.cipherTrustPluginServiceUsername
+		if (settings.keysServiceUsername) {
+			rtn = settings.keysServiceUsername
 			rtn = rtn.replace(" ", "");
 		}
 		return rtn
@@ -160,8 +160,8 @@ class ThalesCipherTrustPlugin extends Plugin {
 	public String getServicePassword() {
 		def rtn
 		def settings = getSettings(this.morpheus, this)
-		if (settings.cipherTrustPluginServicePassword) {
-			rtn = settings.cipherTrustPluginServicePassword
+		if (settings.keysServicePassword) {
+			rtn = settings.keysServicePassword
 		}
 		return rtn
 	}
@@ -169,8 +169,8 @@ class ThalesCipherTrustPlugin extends Plugin {
 	public String getDomain() {
 		def rtn
 		def settings = getSettings(this.morpheus, this)
-		if (settings.cipherTrustPluginServiceSlave) {
-			rtn = settings.cipherTrustPluginServiceSlave
+		if (settings.keysServiceDomain) {
+			rtn = settings.keysServiceDomain
 			rtn = rtn.replace(" ", "");
 		}
 		return rtn

@@ -71,7 +71,7 @@ class ThalesCipherTrustCredentialProvider implements CredentialProvider {
             def authResults = authToken(integration)
 
             if(authResults.success) {
-                String credPath= servicePath + formatApiName(credential.name)
+                String credPath = servicePath + formatApiName(credential.name)
 
                 def headers = ['accept':'application/json','Content-Type':'application/json']
                 def body = ['token': this.credTtoken, 'json': false, 'names' : [ credPath ]]
@@ -176,7 +176,7 @@ class ThalesCipherTrustCredentialProvider implements CredentialProvider {
         try {
             def authResults = authToken(integration)
             if(authResults.success) {
-                String credPath= servicePath + formatApiName(credential.name)
+                String credPath = servicePath + formatApiName(credential.name)
 
                 def headers = ['accept':'application/json','Content-Type':'application/json']
                 def body = ['token': this.credTtoken,'format': 'text','name' :credPath]
